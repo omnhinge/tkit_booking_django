@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="admin-shows">
+    <h2>Manage Shows</h2>
+    
+    <div class="admin-actions">
+        <a href="{% url 'add-show' %}" class="btn btn-primary">Add New Show</a>
+    </div>
+    
+    <div class="shows-list">
+        {% for show in shows %}
+        <div class="show-item">
+            <div class="show-info">
+                <h3>{{ show.title }}</h3>
+                <p>{{ show.date_time }}</p>
+                <p>{{ show.venue }}</p>
+                <p>Available Seats: {{ show.available_seats }}/{{ show.total_seats }}</p>
+            </div>
+            <div class="show-actions">
+                <a href="{% url 'edit-show' show.id %}" class="btn btn-small">Edit</a>
+                <form method="post" action="{% url 'delete-show' show.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-small btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <p>No shows available.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>Welcome, {{ user.username }}!</h2>
+    
+    <div class="dashboard-cards">
+        <div class="card">
+            <h3>Upcoming Shows</h3>
+            <div class="show-list">
+                {% for show in upcoming_shows|slice:":3" %}
+                <div class="show-item">
+                    <h4>{{ show.title }}</h4>
+                    <p>{{ show.date_time|date:"M d, Y" }}</p>
+                    <a href="{% url 'book-show' show.id %}" class="btn">Book Now</a>
+                </div>
+                {% empty %}
+                <p>No upcoming shows available.</p>
+                {% endfor %}
+            </div>
+            <a href="{% url 'shows' %}" class="btn">View All Shows</a>
+        </div>
+        
+        <div class="card">
+            <h3>Recent Bookings</h3>
+            <div class="booking-list">
+                {% for booking in recent_bookings|slice:":3" %}
+                <div class="booking-item">
+                    <h4>{{ booking.show.title }}</h4>
+                    <p>{{ booking.booked_at|date:"M d, Y" }}</p>
+                    <p>Seats: {{ booking.seats }}</p>
+                </div>
+                {% empty %}
+                <p>No recent bookings.</p>
+                {% endfor %}
+            </div>
+            <a href="{% url 'booking-history' %}" class="btn">View All Bookings</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

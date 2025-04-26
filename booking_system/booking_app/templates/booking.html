@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="booking-container">
+    <h2>Book Tickets for {{ show.title }}</h2>
+    
+    <div class="show-details">
+        <p><strong>Date & Time:</strong> {{ show.date_time }}</p>
+        <p><strong>Venue:</strong> {{ show.venue }}</p>
+        <p><strong>Available Seats:</strong> {{ show.available_seats }}</p>
+        <p><strong>Price per ticket:</strong> ${{ show.price }}</p>
+    </div>
+    
+    <form method="post" class="booking-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="seats">Number of Seats</label>
+            <input type="number" id="seats" name="seats" min="1" max="{{ show.available_seats }}" required>
+        </div>
+        
+        <div class="seat-selection">
+            <h3>Select Seats</h3>
+            <div class="seat-map">
+                <!-- This would be dynamically generated based on venue layout -->
+                <div class="screen">SCREEN</div>
+                {% for row in 'ABCDEFGHIJ'|make_list %}
+                <div class="seat-row">
+                    <span class="row-label">Row {{ row }}</span>
+                    {% for seat in '123456789'|make_list %}
+                    <div class="seat" data-row="{{ row }}" data-seat="{{ seat }}">{{ row }}{{ seat }}</div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <button type="submit" class="btn">Add to Cart</button>
+        <a href="{% url 'shows' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const seats = document.querySelectorAll('.seat');
+    const seatsInput = document.getElementById('seats');
+    
+    seats.forEach(seat => {
+        seat.addEventListener('click', function() {
+            if (this.classList.contains('selected')) {
+                this.classList.remove('selected');
+            } else {
+                if (document.querySelectorAll('.selected').length < parseInt(seatsInput.value)) {
+                    this.classList.add('selected');
+                }
+            }
+        });
+    });
+    
+    seatsInput.addEventListener('change', function() {
+        const selected = document.querySelectorAll('.selected');
+        if (selected.length > this.value) {
+            alert(`You've selected more seats than requested. Please deselect some seats.`);
+        }
+    });
+});
+</script>
+{% endblock %}

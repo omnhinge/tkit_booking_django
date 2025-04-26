@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="admin-bookings">
+    <h2>All Bookings</h2>
+    
+    <div class="bookings-list">
+        {% for booking in bookings %}
+        <div class="booking-item">
+            <div class="booking-header">
+                <h3>{{ booking.show.title }}</h3>
+                <span class="booking-date">{{ booking.booked_at|date:"M d, Y" }}</span>
+                <span class="user-info">User: {{ booking.user.username }}</span>
+            </div>
+            
+            <div class="booking-details">
+                <p><strong>Show Date:</strong> {{ booking.show.date_time }}</p>
+                <p><strong>Venue:</strong> {{ booking.show.venue }}</p>
+                <p><strong>Seats:</strong> {{ booking.seats }}</p>
+                <p><strong>Total Paid:</strong> ${{ booking.total_price }}</p>
+                <p><strong>Status:</strong> {% if booking.is_confirmed %}Confirmed{% else %}Pending{% endif %}</p>
+            </div>
+            
+            <div class="booking-actions">
+                {% if not booking.is_confirmed %}
+                <form method="post" action="{% url 'admin-confirm-booking' booking.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-small">Confirm</button>
+                </form>
+                {% endif %}
+                <form method="post" action="{% url 'admin-cancel-booking' booking.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-small btn-danger">Cancel</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <p>No bookings found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

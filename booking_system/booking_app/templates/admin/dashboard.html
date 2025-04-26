@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <h2>Admin Dashboard</h2>
+    
+    <div class="admin-stats">
+        <div class="stat-card">
+            <h3>Total Shows</h3>
+            <p>{{ total_shows }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Bookings</h3>
+            <p>{{ total_bookings }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Revenue</h3>
+            <p>${{ total_revenue }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Upcoming Shows</h3>
+            <p>{{ upcoming_shows_count }}</p>
+        </div>
+    </div>
+    
+    <div class="admin-actions">
+        <a href="{% url 'admin-shows' %}" class="btn">Manage Shows</a>
+        <a href="{% url 'admin-bookings' %}" class="btn">View Bookings</a>
+        <a href="{% url 'add-show' %}" class="btn btn-primary">Add New Show</a>
+    </div>
+</div>
+{% endblock %}

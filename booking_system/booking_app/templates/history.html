@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="history-container">
+    <h2>Your Booking History</h2>
+    
+    {% if bookings %}
+    <div class="bookings-list">
+        {% for booking in bookings %}
+        <div class="booking-item {% if not booking.is_confirmed %}pending{% endif %}">
+            <div class="booking-header">
+                <h3>{{ booking.show.title }}</h3>
+                <span class="booking-date">{{ booking.booked_at|date:"M d, Y" }}</span>
+                <span class="booking-status">
+                    {% if booking.is_confirmed %}
+                    Confirmed
+                    {% else %}
+                    Pending
+                    {% endif %}
+                </span>
+            </div>
+            
+            <div class="booking-details">
+                <p><strong>Date:</strong> {{ booking.show.date_time }}</p>
+                <p><strong>Venue:</strong> {{ booking.show.venue }}</p>
+                <p><strong>Seats:</strong> {{ booking.seats }}</p>
+                <p><strong>Total Paid:</strong> ${{ booking.total_price }}</p>
+            </div>
+            
+            {% if not booking.is_confirmed %}
+            <div class="booking-actions">
+                <form method="post" action="{% url 'confirm-booking' booking.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-small">Confirm Payment</button>
+                </form>
+                <form method="post" action="{% url 'cancel-booking' booking.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-small btn-danger">Cancel</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-history">
+        <p>You haven't made any bookings yet.</p>
+        <a href="{% url 'shows' %}" class="btn">Browse Shows</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

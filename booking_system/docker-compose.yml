@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: bash -c "python manage.py migrate && python manage.py createsuperuser --noinput || true && gunicorn --bind 0.0.0.0:8000 booking_system.wsgi:application"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_NAME=ticket_booking
+      - DB_USER=booking_user
+      - DB_PASSWORD=booking_pass
+
+  db:
+    image: mysql:8.0
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=ticket_booking
+      - MYSQL_USER=booking_user
+      - MYSQL_PASSWORD=booking_pass
+      - MYSQL_ROOT_PASSWORD=root_pass
+
+
+volumes:
+  db_data:

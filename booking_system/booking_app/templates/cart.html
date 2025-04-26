@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="cart-container">
+    <h2>Your Cart</h2>
+    
+    {% if cart_items %}
+    <div class="cart-items">
+        {% for item in cart_items %}
+        <div class="cart-item">
+            <div class="item-info">
+                <h3>{{ item.show.title }}</h3>
+                <p>{{ item.show.date_time }}</p>
+                <p>{{ item.show.venue }}</p>
+            </div>
+            <div class="item-details">
+                <p><strong>Seats:</strong> {{ item.seats }}</p>
+                <p><strong>Price:</strong> ${{ item.total_price }}</p>
+            </div>
+            <div class="item-actions">
+                <a href="{% url 'book-show' item.show.id %}" class="btn btn-small">Edit</a>
+                <form method="post" action="{% url 'remove-from-cart' item.show.id %}" class="remove-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-small btn-danger">Remove</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="cart-summary">
+        <h3>Order Summary</h3>
+        <p><strong>Total Items:</strong> {{ cart_items|length }}</p>
+        <p><strong>Total Seats:</strong> {{ total_seats }}</p>
+        <p><strong>Total Price:</strong> ${{ total }}</p>
+        
+        <form method="post" action="{% url 'checkout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Confirm Booking</button>
+        </form>
+    </div>
+    {% else %}
+    <div class="empty-cart">
+        <p>Your cart is empty.</p>
+        <a href="{% url 'shows' %}" class="btn">Browse Shows</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
