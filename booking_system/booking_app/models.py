@@ -1,10 +1,20 @@
 # booking_app/models.py
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from django.contrib.auth.models import AbstractUser, Group, Permission
 class CustomUser(AbstractUser):
     is_admin = models.BooleanField(default=False)
-
+    groups = models.ManyToManyField(
+        Group,
+        related_name='customuser_groups',  # Add a custom related_name
+        blank=True,
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name='customuser_permissions',  # Add a custom related_name
+        blank=True,
+    )
+    
 class Show(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()

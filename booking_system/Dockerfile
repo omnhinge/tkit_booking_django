@@ -23,9 +23,9 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 # Copy project files
 COPY . .
-COPY wait_for_db.py /app/wait_for_db.py
+
 # Expose the port
 EXPOSE 8000
 
-# Run migrations, collect static, start server
-CMD ["bash", "-c", "python wait_for_db.py && python manage.py migrate && gunicorn --bind 0.0.0.0:8000 booking_system.wsgi:application"]
+# Run migrations and start server
+CMD ["bash", "-c", "python manage.py migrate && gunicorn --bind 0.0.0.0:8000 booking_system.wsgi:application"]

@@ -72,23 +72,27 @@ WSGI_APPLICATION = 'booking_system.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-import pymysql
-pymysql.install_as_MySQLdb()
+import os
+
+import os
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ticket_booking',
+        'NAME': 'booking_db',
         'USER': 'booking_user',
-        'PASSWORD': 'booking_pass',
-        'HOST': 'db',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        }
+        'PASSWORD': 'yourpassword',
+        'HOST': 'db',  # This should match the MySQL service name in docker-compose.yml
+        'PORT': '3306',  # Default MySQL port
     }
 }
 
 
+
+# settings.py
+LOGIN_REDIRECT_URL = 'dashboard'  # Redirect to the dashboard after login
+LOGOUT_REDIRECT_URL = 'login'     
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -123,8 +127,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Adjust this according to your project structure
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

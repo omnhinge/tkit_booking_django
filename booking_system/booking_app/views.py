@@ -1,4 +1,3 @@
-# booking_app/views.py
 from django.views.generic import View, TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -10,11 +9,12 @@ from django.db.models import Sum
 from .models import Show, Booking, CustomUser
 import datetime
 from django.utils import timezone
+
 class RegisterView(CreateView):
     model = CustomUser
     template_name = 'register.html'
     fields = ['username', 'email', 'password']
-    success_url = reverse_lazy('login')
+    success_url = reverse_lazy('dashboard')
 
     def form_valid(self, form):
         user = form.save(commit=False)
@@ -28,12 +28,26 @@ class CustomLoginView(LoginView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
+        
+        # Handle the success message
         messages.success(self.request, f'Welcome back, {self.request.user.username}!')
+        # Add this in your form_valid method to debug:
+        print(f"User: {self.request.user.username}, is authenticated: {self.request.user.is_authenticated}")
+
+        # Check if a 'next' URL is passed in the GET request and redirect to it if so
+        next_url = self.request.GET.get('next')
+        if next_url:
+            return redirect(next_url)  # Redirect to the page user was trying to access
+        
         return response
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Invalid login credentials. Please try again.')
+        return super().form_invalid(form)
 
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['upcoming_shows'] = Show.objects.filter(date_time__gte=timezone.now()).order_by('date_time')[:3]

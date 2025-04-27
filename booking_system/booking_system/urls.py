@@ -15,21 +15,24 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 # booking_app/urls.py
+from django.shortcuts import redirect
 from django.urls import path
 from booking_app.views import (
 
     RegisterView, CustomLoginView, DashboardView, ShowsListView, BookShowView,
     CartView, RemoveFromCartView, CheckoutView, BookingHistoryView,
-    ConfirmBookingView, CancelBookingView,LoginView, LogoutView,
+    ConfirmBookingView, CancelBookingView, LoginView, LogoutView,
     AdminDashboardView, AdminShowsView, AddShowView, EditShowView,
     DeleteShowView, AdminBookingsView, AdminConfirmBookingView,
     AdminCancelBookingView
 )
 
 urlpatterns = [
+    path('', lambda request: redirect('dashboard', permanent=False)),  # 👈 this line added!
+
     # User URLs
     path('register/', RegisterView.as_view(), name='register'),
-    path('login/', CustomLoginView.as_view(), name='login'),
+    path('accounts/login/', CustomLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
     path('shows/', ShowsListView.as_view(), name='shows'),
