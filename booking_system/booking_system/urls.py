@@ -17,15 +17,16 @@ Including another URLconf
 # booking_app/urls.py
 from django.shortcuts import redirect
 from django.urls import path
+from django.contrib.auth.views import LogoutView
 from booking_app.views import (
-
     RegisterView, CustomLoginView, DashboardView, ShowsListView, BookShowView,
     CartView, RemoveFromCartView, CheckoutView, BookingHistoryView,
-    ConfirmBookingView, CancelBookingView, LoginView, LogoutView,
+    ConfirmBookingView, CancelBookingView,
     AdminDashboardView, AdminShowsView, AddShowView, EditShowView,
     DeleteShowView, AdminBookingsView, AdminConfirmBookingView,
     AdminCancelBookingView
 )
+
 
 urlpatterns = [
     path('', lambda request: redirect('dashboard', permanent=False)),  # 👈 this line added!
